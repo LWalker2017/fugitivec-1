@@ -45,3 +45,12 @@ configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ../network-resource
 
 configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ../network-resources/channel-artifacts/Org2MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org2MSP
 ```
+
+启动网络
+
+``` bash
+docker-compose -f docker-compose.yml up -d
+```
+
+如果想实时查看区块链网络的日志, 可以不使用`-d`选项
+
