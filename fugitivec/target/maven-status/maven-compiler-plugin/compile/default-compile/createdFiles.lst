@@ -1,0 +1,5 @@
+com/vancir/user/AppUser.class
+com/vancir/client/CAClient.class
+com/vancir/network/CAEnrollment.class
+com/vancir/config/Config.class
+com/vancir/network/CreateChannel.class
