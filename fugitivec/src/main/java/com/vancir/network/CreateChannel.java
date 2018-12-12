@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Properties;
 
 import javax.xml.bind.DatatypeConverter;
@@ -41,8 +42,6 @@ public class CreateChannel {
     
         logger.info(org1Admin.toString());
         logger.info(org2Admin.toString());
-
-
     }
     /**
      * Get organization admin user
@@ -56,7 +55,6 @@ public class CreateChannel {
     public static AppUser getOrgAdmin(String adminName, String msp, 
             String pkFolderPath, String certFolderPath) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         AppUser orgAdmin = new AppUser();
-        
         Enrollment enrollOrgAdmin = getEnrollFromPath(pkFolderPath, certFolderPath);
         orgAdmin.setEnrollment(enrollOrgAdmin);
         orgAdmin.setMspId(msp);
@@ -101,7 +99,7 @@ public class CreateChannel {
             
             byte[] encodedKey = DatatypeConverter.parseBase64Binary(keyBuilder.toString());
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encodedKey);
-            KeyFactory kf = KeyFactory.getInstance("ECDSA");
+            KeyFactory kf = KeyFactory.getInstance("EC");
             key = kf.generatePrivate(keySpec);
 
         } finally {

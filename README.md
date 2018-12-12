@@ -2,7 +2,60 @@
 
 ## Introduction
 
+a fugitive ledger based on hyperledger fabric java sdk 
+
 ## Quick Start
+
+1. clone the repository to the local
+
+``` bash
+git clone https://github.com/Vancir/fugitivec.git
+cd fugitivec
+```
+
+2. build the network resources
+
+``` bash
+cd build-network
+chmod +x *.sh
+./init.sh
+./generate
+```
+
+3. start the blockchain network 
+
+``` bash
+cd build-network
+./start.sh
+# ./stop.sh         stop the blockchain network
+# ./teardown.sh     stop the blockchain network and remove docker images
+```
+
+4. build the blockchain java client
+
+``` bash
+cd fugitivec
+mvn install
+```
+
+these command will create a `target` folder which contains our client.
+
+``` bash
+➜  target git:(master) ✗ ls
+archive-tmp  fugitivec-1.0-SNAPSHOT.jar                        generated-sources  maven-status
+classes      fugitivec-1.0-SNAPSHOT-jar-with-dependencies.jar  maven-archiver
+```
+
+5. run the client 
+
+``` bash
+cd network-resources 
+cp ../fugitivec/target/fugitivec-1.0-SNAPSHOT-jar-with-dependencies.jar client.jar
+java -cp client.jar com.vancir.network.CreateChannel
+```
+
+
+## Docs
 
 Follow these steps to setup the environment and run the repo
 
