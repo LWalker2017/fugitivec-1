@@ -12,7 +12,9 @@ public class Config {
 	public static final String ADMIN = "admin";
 	public static final String ADMINPW = "adminpw";
 
-	public static final String ORG1_ADMIN_BASE = "crypto-config" + File.separator 
+	public static final String ORG1_ADMIN_BASE = ".." + File.separator + ".." + File.separator 
+												+ "network-resources" + File.separator
+												+ "crypto-config" + File.separator 
 												+ "peerOrganizations" + File.separator 
 												+ "org1.vancir.com" + File.separator 
 												+ "users" + File.separator 
@@ -20,7 +22,9 @@ public class Config {
 												+ "msp";
 	public static final String ORG1_ADMIN_PK = ORG1_ADMIN_BASE + File.separator + "keystore";
 	public static final String ORG1_ADMIN_CERT = ORG1_ADMIN_BASE + File.separator + "admincerts";
-	public static final String ORG2_ADMIN_BASE = "crypto-config" + File.separator 
+	public static final String ORG2_ADMIN_BASE = ".." + File.separator + ".." + File.separator 
+												+ "network-resources" + File.separator
+												+ "crypto-config" + File.separator 
 												+ "peerOrganizations" + File.separator 
                                                 + "org2.vancir.com" + File.separator 
                                                 + "users" + File.separator 

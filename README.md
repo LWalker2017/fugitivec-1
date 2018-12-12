@@ -9,39 +9,39 @@ a fugitive ledger based on hyperledger fabric java sdk
 1. clone the repository to the local
 
 ``` bash
-git clone https://github.com/Vancir/fugitivec.git
-cd fugitivec
+$ git clone https://github.com/Vancir/fugitivec.git
+$ cd fugitivec
 ```
 
 2. build the network resources
 
 ``` bash
-cd build-network
-chmod +x *.sh
-./init.sh
-./generate
+$ cd build-network
+$ chmod +x *.sh
+$ ./init.sh
+$ ./generate
 ```
 
 3. start the blockchain network 
 
 ``` bash
-cd build-network
-./start.sh
-# ./stop.sh         stop the blockchain network
-# ./teardown.sh     stop the blockchain network and remove docker images
+$ cd build-network
+$ ./start.sh
+# $ ./stop.sh         stop the blockchain network
+# $ ./teardown.sh     stop the blockchain network and remove docker images
 ```
 
 4. build the blockchain java client
 
 ``` bash
-cd fugitivec
-mvn install
+$ cd fugitivec
+$ mvn install
 ```
 
 these command will create a `target` folder which contains our client.
 
 ``` bash
-➜  target git:(master) ✗ ls
+$ ls
 archive-tmp  fugitivec-1.0-SNAPSHOT.jar                        generated-sources  maven-status
 classes      fugitivec-1.0-SNAPSHOT-jar-with-dependencies.jar  maven-archiver
 ```
@@ -49,11 +49,11 @@ classes      fugitivec-1.0-SNAPSHOT-jar-with-dependencies.jar  maven-archiver
 5. run the client 
 
 ``` bash
-cd network-resources 
-cp ../fugitivec/target/fugitivec-1.0-SNAPSHOT-jar-with-dependencies.jar client.jar
-java -cp client.jar com.vancir.network.CreateChannel
+$ cd fugitivec/target
+$ java -cp fugitivec-1.0-SNAPSHOT-jar-with-dependencies.jar com.vancir.network.CreateChannel
+2018-12-12 20:17:38 INFO  CreateChannel:43 - AppUser(name=admin, roles=null, account=null, affiliation=null, enrollment=com.vancir.network.CAEnrollment@6f539caf, mspId=Org1MSP)
+2018-12-12 20:17:38 INFO  CreateChannel:44 - AppUser(name=admin, roles=null, account=null, affiliation=null, enrollment=com.vancir.network.CAEnrollment@4783da3f, mspId=Org2MSP)
 ```
-
 
 ## Docs
 
