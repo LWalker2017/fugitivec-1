@@ -4,13 +4,25 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import java.util.Properties;
+import java.lang.Exception;
+import java.lang.IllegalAccessException;
+import java.lang.InstantiationException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.ClassNotFoundException;
 import org.apache.log4j.Logger;
 
 import org.hyperledger.fabric.sdk.Enrollment;
 import org.hyperledger.fabric.sdk.security.CryptoSuite;
+import org.hyperledger.fabric.sdk.exception.CryptoException;
+import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
 import org.hyperledger.fabric_ca.sdk.HFCAClient;
 import org.hyperledger.fabric_ca.sdk.RegistrationRequest;
+import org.hyperledger.fabric_ca.sdk.exception.EnrollmentException;
+// import org.hyperledger.fabric_ca.sdk.exception.InvalidArgumentException;
+import org.hyperledger.fabric_ca.sdk.exception.RegistrationException;
 
+
+import java.net.MalformedURLException;
 import com.vancir.config.Config;
 import com.vancir.user.AppUser;
 
@@ -35,7 +47,7 @@ public class CAClient {
      * @param caClientProperties    The fabric-ca client properties. Can be null
      * @throws Exception
      */
-    public CAClient(String caUrl, Properties caClientProperties) throws Exception {
+    public CAClient(String caUrl, Properties caClientProperties) throws IllegalAccessException, MalformedURLException, InstantiationException, ClassNotFoundException, CryptoException, InvalidArgumentException, NoSuchMethodException, InvocationTargetException {
         this.caUrl = caUrl;
         this.caClientProperties = caClientProperties;     
 
@@ -50,7 +62,7 @@ public class CAClient {
      * @return
      * @throws Exception
      */
-    public String registerUser(AppUser registrar) throws Exception {
+    public String registerUser(AppUser registrar) throws Exception, RegistrationException, InvalidArgumentException {
         RegistrationRequest rr = new RegistrationRequest(registrar.getName(), registrar.getAffiliation());
         String enrollmentSecret = caClient.register(rr, registrar);
 
@@ -79,7 +91,7 @@ public class CAClient {
      * @return
      * @throws Exception
      */
-    public AppUser registerAndEnrollUser(AppUser registrar) throws Exception {
+    public AppUser registerAndEnrollUser(AppUser registrar) throws Exception, EnrollmentException {
         String eSecret = registerUser(registrar);
         AppUser user = enrollUser(registrar, eSecret);
         return user;
