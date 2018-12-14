@@ -9,3 +9,5 @@ rm -rf ~/.hfc-key-store/*
 
 # copy peer admin credentials into the keyValStore
 mkdir -p ~/.hfc-key-store
+
+rm -rf ../network-resources/*

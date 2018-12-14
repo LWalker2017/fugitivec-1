@@ -3,13 +3,14 @@ package com.vancir.client;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.log4j.Logger;
+
 import java.util.Properties;
 import java.lang.Exception;
 import java.lang.IllegalAccessException;
 import java.lang.InstantiationException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.ClassNotFoundException;
-import org.apache.log4j.Logger;
 
 import org.hyperledger.fabric.sdk.Enrollment;
 import org.hyperledger.fabric.sdk.security.CryptoSuite;

@@ -12,7 +12,8 @@ echo "##### Generate certificates using cryptogen tool #########"
 echo "##########################################################"
 cryptogen generate --config=./crypto-config.yaml --output="../network-resources/crypto-config"
 
-
+mkdir -p ../network-resources/channel-artifacts
+touch ../network-resources/channel-artifacts/genesis.block
 echo "##########################################################"
 echo "#########  Generating Orderer Genesis block ##############"
 echo "##########################################################"

@@ -5,6 +5,11 @@ import org.apache.log4j.Logger;
 import org.hyperledger.fabric.sdk.Enrollment;
 import org.hyperledger.fabric.sdk.security.CryptoSuite;
 import org.hyperledger.fabric_ca.sdk.HFCAClient;
+import org.hyperledger.fabric.sdk.Channel;
+import org.hyperledger.fabric.sdk.ChannelConfiguration;
+import org.hyperledger.fabric.sdk.Peer;
+import org.hyperledger.fabric.sdk.Orderer;
+
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,6 +21,8 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Properties;
 
 import javax.xml.bind.DatatypeConverter;
@@ -29,19 +36,63 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import com.vancir.config.Config;
 import com.vancir.user.AppUser;
 import com.vancir.client.CAClient;
+import com.vancir.client.FabricManager;
 
 public class CreateChannel {
 
     private static Logger logger = Logger.getLogger(CreateChannel.class); 
 
-    public static void main(String[] args) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        AppUser org1Admin = getOrgAdmin(Config.ADMIN, Config.ORG1_MSP,
-                                Config.ORG1_ADMIN_PK, Config.ORG1_ADMIN_CERT);
-        AppUser org2Admin = getOrgAdmin(Config.ADMIN, Config.ORG2_MSP,
-                                Config.ORG2_ADMIN_PK, Config.ORG2_ADMIN_PK);
-    
-        logger.info(org1Admin.toString());
-        logger.info(org2Admin.toString());
+    public static void main(String[] args) {
+        try {
+            // HACK: Shrink the project path string 
+            AppUser org1Admin = getOrgAdmin(Config.ADMIN, Config.ORG1_MSP,
+                                "/home/vancir/Documents/code/fugitivec/network-resources/crypto-config/peerOrganizations/org1.vancir.com/users/Admin@org1.vancir.com/msp/keystore", 
+                                "/home/vancir/Documents/code/fugitivec/network-resources/crypto-config/peerOrganizations/org1.vancir.com/users/Admin@org1.vancir.com/msp/admincerts");
+                                // Config.ORG1_ADMIN_PK, Config.ORG1_ADMIN_CERT);
+            // HACK: Shrink the project path string 
+            AppUser org2Admin = getOrgAdmin(Config.ADMIN, Config.ORG2_MSP,
+                                "/home/vancir/Documents/code/fugitivec/network-resources/crypto-config/peerOrganizations/org2.vancir.com/users/Admin@org2.vancir.com/msp/keystore",
+                                "/home/vancir/Documents/code/fugitivec/network-resources/crypto-config/peerOrganizations/org2.vancir.com/users/Admin@org2.vancir.com/msp/admincerts");
+                                    // Config.ORG2_ADMIN_PK, Config.ORG2_ADMIN_PK);
+        
+            // logger.info(org1Admin.toString());
+            // logger.info(org2Admin.toString());
+
+            FabricManager fabricManager = new FabricManager(org1Admin);
+            Orderer orderer = fabricManager.getHfclient().newOrderer(Config.ORDERER_NAME, Config.ORDERER_URL);
+            // HACK: Shrink the project path string 
+            ChannelConfiguration  channelConfiguration = new ChannelConfiguration(new File("/home/vancir/Documents/code/fugitivec/network-resources/channel-artifacts/channel.tx")); // Config.CHANNEL_TX_PATH)); // 
+            byte[] channelConfigurationSignatures = fabricManager.getHfclient().getChannelConfigurationSignature(channelConfiguration, org1Admin);
+            Channel mychannel = fabricManager.getHfclient().newChannel(Config.CHANNEL_NAME, orderer, 
+                                    channelConfiguration, channelConfigurationSignatures);
+            
+            Peer peer0_org1 = fabricManager.getHfclient().newPeer(Config.PEER0_ORG1_NAME, Config.PEER0_ORG1_URL);
+            Peer peer1_org1 = fabricManager.getHfclient().newPeer(Config.PEER1_ORG1_NAME, Config.PEER1_ORG1_URL);
+            Peer peer0_org2 = fabricManager.getHfclient().newPeer(Config.PEER0_ORG2_NAME, Config.PEER0_ORG2_URL);
+            Peer peer1_org2 = fabricManager.getHfclient().newPeer(Config.PEER1_ORG2_NAME, Config.PEER1_ORG2_URL);
+
+            mychannel.joinPeer(peer0_org1);
+            mychannel.joinPeer(peer1_org1);
+            mychannel.addOrderer(orderer);
+            mychannel.initialize();
+
+            fabricManager.getHfclient().setUserContext(org2Admin);
+            mychannel = fabricManager.getHfclient().getChannel(Config.CHANNEL_NAME);
+            mychannel.joinPeer(peer0_org2);
+            mychannel.joinPeer(peer1_org2);
+
+            Collection<Peer> peers = mychannel.getPeers();
+            Iterator peerIter = peers.iterator();
+            while (peerIter.hasNext()) {
+                Peer nextPeer = (Peer) peerIter.next();
+                logger.info(nextPeer.getName() + " at " + nextPeer.getUrl());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+
+        
     }
     /**
      * Get organization admin user

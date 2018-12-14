@@ -9,6 +9,7 @@ docker-compose -f docker-compose.yml down
 
 # Create and Start the Docker containers for the network
 echo -e "\nSetting up the Hyperledger Fabric 1.3 network"
+export FABRIC_START_TIMEOUT=90
 docker-compose -f docker-compose.yml up -d
 # sleep 15
 echo -e "\nNetwork setup completed!!\n"
