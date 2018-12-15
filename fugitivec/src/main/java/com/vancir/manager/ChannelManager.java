@@ -1,8 +1,8 @@
-package com.vancir.client;
+package com.vancir.manager;
 
 import lombok.Getter;
 import org.hyperledger.fabric.sdk.Channel;
-import com.vancir.client.FabricManager;
+import com.vancir.manager.FabricManager;
 
 @Getter
 public class ChannelManager {

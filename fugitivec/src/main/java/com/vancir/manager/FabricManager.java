@@ -1,10 +1,10 @@
-package com.vancir.client;
+package com.vancir.manager;
 
 import lombok.Getter;
 import java.lang.reflect.InvocationTargetException;
 
 import com.vancir.user.AppUser;
-import com.vancir.client.ChannelManager;
+import com.vancir.manager.ChannelManager;
 
 import org.hyperledger.fabric.sdk.Channel;
 import org.hyperledger.fabric.sdk.HFClient;

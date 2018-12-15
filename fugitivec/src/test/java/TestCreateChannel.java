@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 import com.vancir.config.Config;
 import com.vancir.network.CreateChannel;
 import com.vancir.user.AppUser;
-import com.vancir.client.FabricManager;
+import com.vancir.manager.FabricManager;
 
 
 public class TestCreateChannel {

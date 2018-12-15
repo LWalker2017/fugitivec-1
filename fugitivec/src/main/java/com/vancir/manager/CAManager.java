@@ -1,4 +1,4 @@
-package com.vancir.client;
+package com.vancir.manager;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -45,7 +45,7 @@ public class CAManager {
      * Constructor 
      * 
      * @param caUrl                 The fabric-ca server url
-     * @param caClientProps    The fabric-ca client properties. Can be null
+     * @param caClientProps         The fabric-ca client properties. Can be null
      * @throws Exception
      */
     public CAManager(String caUrl, Properties caClientProps) throws IllegalAccessException, MalformedURLException, InstantiationException, ClassNotFoundException, CryptoException, InvalidArgumentException, NoSuchMethodException, InvocationTargetException {
