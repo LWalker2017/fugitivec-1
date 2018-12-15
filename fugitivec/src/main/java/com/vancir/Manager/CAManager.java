@@ -28,16 +28,16 @@ import com.vancir.config.Config;
 import com.vancir.user.AppUser;
 
 /**
- * CAClient
+ * CAManager
  */
 @Getter
 @Setter
 @ToString
-public class CAClient {
-    private static Logger logger = Logger.getLogger(CAClient.class); 
+public class CAManager {
+    private static Logger logger = Logger.getLogger(CAManager.class); 
 
     String caUrl;
-    Properties caClientProperties;
+    Properties caClientProps;
     HFCAClient caClient;
     AppUser adminUser;
 
@@ -45,15 +45,15 @@ public class CAClient {
      * Constructor 
      * 
      * @param caUrl                 The fabric-ca server url
-     * @param caClientProperties    The fabric-ca client properties. Can be null
+     * @param caClientProps    The fabric-ca client properties. Can be null
      * @throws Exception
      */
-    public CAClient(String caUrl, Properties caClientProperties) throws IllegalAccessException, MalformedURLException, InstantiationException, ClassNotFoundException, CryptoException, InvalidArgumentException, NoSuchMethodException, InvocationTargetException {
+    public CAManager(String caUrl, Properties caClientProps) throws IllegalAccessException, MalformedURLException, InstantiationException, ClassNotFoundException, CryptoException, InvalidArgumentException, NoSuchMethodException, InvocationTargetException {
         this.caUrl = caUrl;
-        this.caClientProperties = caClientProperties;     
+        this.caClientProps = caClientProps;     
 
         CryptoSuite cryptoSuite = CryptoSuite.Factory.getCryptoSuite();
-        caClient = HFCAClient.createNewInstance(caUrl, caClientProperties);
+        caClient = HFCAClient.createNewInstance(caUrl, caClientProps);
         caClient.setCryptoSuite(cryptoSuite);
     }
     /**

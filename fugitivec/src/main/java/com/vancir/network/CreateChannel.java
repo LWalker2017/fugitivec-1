@@ -33,7 +33,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 
 import com.vancir.config.Config;
 import com.vancir.user.AppUser;
-import com.vancir.client.CAClient;
+import com.vancir.client.CAManager;
 import com.vancir.client.FabricManager;
 
 public class CreateChannel {
