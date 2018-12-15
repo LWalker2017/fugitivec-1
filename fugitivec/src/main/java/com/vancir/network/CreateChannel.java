@@ -10,7 +10,6 @@ import org.hyperledger.fabric.sdk.ChannelConfiguration;
 import org.hyperledger.fabric.sdk.Peer;
 import org.hyperledger.fabric.sdk.Orderer;
 
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,7 +23,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
-
 import javax.xml.bind.DatatypeConverter;
 
 import java.security.KeyFactory;
@@ -42,30 +40,28 @@ public class CreateChannel {
 
     private static Logger logger = Logger.getLogger(CreateChannel.class); 
 
+    private static String PROJ_ROOT;
     public static void main(String[] args) {
         try {
-            // HACK: Shrink the project path string 
+            init();
+
             AppUser org1Admin = getOrgAdmin(Config.ADMIN, Config.ORG1_MSP,
-                                "/home/vancir/Documents/code/fugitivec/network-resources/crypto-config/peerOrganizations/org1.vancir.com/users/Admin@org1.vancir.com/msp/keystore", 
-                                "/home/vancir/Documents/code/fugitivec/network-resources/crypto-config/peerOrganizations/org1.vancir.com/users/Admin@org1.vancir.com/msp/admincerts");
-                                // Config.ORG1_ADMIN_PK, Config.ORG1_ADMIN_CERT);
-            // HACK: Shrink the project path string 
+                PROJ_ROOT + Config.ORG1_ADMIN_PK, PROJ_ROOT + Config.ORG1_ADMIN_CERT);
+
             AppUser org2Admin = getOrgAdmin(Config.ADMIN, Config.ORG2_MSP,
-                                "/home/vancir/Documents/code/fugitivec/network-resources/crypto-config/peerOrganizations/org2.vancir.com/users/Admin@org2.vancir.com/msp/keystore",
-                                "/home/vancir/Documents/code/fugitivec/network-resources/crypto-config/peerOrganizations/org2.vancir.com/users/Admin@org2.vancir.com/msp/admincerts");
-                                    // Config.ORG2_ADMIN_PK, Config.ORG2_ADMIN_PK);
-        
-            // logger.info(org1Admin.toString());
-            // logger.info(org2Admin.toString());
+                PROJ_ROOT + Config.ORG2_ADMIN_PK, PROJ_ROOT + Config.ORG2_ADMIN_CERT);
 
             FabricManager fabricManager = new FabricManager(org1Admin);
+
             Orderer orderer = fabricManager.getHfclient().newOrderer(Config.ORDERER_NAME, Config.ORDERER_URL);
-            // HACK: Shrink the project path string 
-            ChannelConfiguration  channelConfiguration = new ChannelConfiguration(new File("/home/vancir/Documents/code/fugitivec/network-resources/channel-artifacts/channel.tx")); // Config.CHANNEL_TX_PATH)); // 
+            
+            // create channel
+            ChannelConfiguration  channelConfiguration = new ChannelConfiguration(new File(PROJ_ROOT + Config.CHANNEL_TX_PATH)); 
             byte[] channelConfigurationSignatures = fabricManager.getHfclient().getChannelConfigurationSignature(channelConfiguration, org1Admin);
             Channel mychannel = fabricManager.getHfclient().newChannel(Config.CHANNEL_NAME, orderer, 
                                     channelConfiguration, channelConfigurationSignatures);
-            
+
+            // create peer
             Peer peer0_org1 = fabricManager.getHfclient().newPeer(Config.PEER0_ORG1_NAME, Config.PEER0_ORG1_URL);
             Peer peer1_org1 = fabricManager.getHfclient().newPeer(Config.PEER1_ORG1_NAME, Config.PEER1_ORG1_URL);
             Peer peer0_org2 = fabricManager.getHfclient().newPeer(Config.PEER0_ORG2_NAME, Config.PEER0_ORG2_URL);
@@ -91,9 +87,17 @@ public class CreateChannel {
             e.printStackTrace();
         }
         
-
-        
     }
+    
+    public static String init() {
+        // get project root path
+        String workingDir = System.getProperty("user.dir");
+        int rootIndex = workingDir.indexOf("fugitivec");
+        PROJ_ROOT = workingDir.substring(0, rootIndex) + "fugitivec" + File.separator;
+        return PROJ_ROOT;
+    }
+
+
     /**
      * Get organization admin user
      * 

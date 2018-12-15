@@ -6,24 +6,6 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Debug (Launch) - Current File",
-            "request": "launch",
-            "mainClass": "${file}"
-        },
-        {
-            "type": "java",
-            "name": "Debug (Launch)-CreateChannel",
-            "request": "launch",
-            "mainClass": "com.vancir.network.CreateChannel"
-        },
-        {
-            "type": "java",
-            "name": "Debug (Launch)-SimpleChaincode",
-            "request": "launch",
-            "mainClass": "org.hyperledger.fabric.example.SimpleChaincode"
-        },
-        {
-            "type": "java",
             "name": "Debug (Attach)",
             "request": "attach",
             "hostName": "localhost",

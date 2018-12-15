@@ -1,0 +1,2 @@
+./teardown.sh
+./start.sh

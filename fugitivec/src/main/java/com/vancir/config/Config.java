@@ -1,6 +1,7 @@
 package com.vancir.config;
 
 import java.io.File;
+import java.util.Properties;
 
 public class Config {
 	
@@ -12,10 +13,7 @@ public class Config {
 	public static final String ADMIN = "admin";
 	public static final String ADMINPW = "adminpw";
 
-	public static final String PROJ_ROOT = "/home/vancir/Documents/code/fugitivec";
-
-	public static final String ORG1_ADMIN_BASE = PROJ_ROOT // ".." + File.separator + ".." + File.separator 
-												+ "network-resources" + File.separator
+	public static final String ORG1_ADMIN_BASE = "network-resources" + File.separator 
 												+ "crypto-config" + File.separator 
 												+ "peerOrganizations" + File.separator 
 												+ "org1.vancir.com" + File.separator 
@@ -24,8 +22,7 @@ public class Config {
 												+ "msp";
 	public static final String ORG1_ADMIN_PK = ORG1_ADMIN_BASE + File.separator + "keystore";
 	public static final String ORG1_ADMIN_CERT = ORG1_ADMIN_BASE + File.separator + "admincerts";
-	public static final String ORG2_ADMIN_BASE = PROJ_ROOT // ".." + File.separator + ".." + File.separator 
-												+ "network-resources" + File.separator
+	public static final String ORG2_ADMIN_BASE = "network-resources" + File.separator 
 												+ "crypto-config" + File.separator 
 												+ "peerOrganizations" + File.separator 
                                                 + "org2.vancir.com" + File.separator 
@@ -42,8 +39,7 @@ public class Config {
 	public static final String ORDERER_URL = "grpc://localhost:7050";
 	
 	public static final String CHANNEL_NAME = "mychannel";
-	public static final String CHANNEL_TX_PATH = PROJ_ROOT // ".." + File.separator + ".." + File.separator
-												+ "network-resources" + File.separator
+	public static final String CHANNEL_TX_PATH = "network-resources" + File.separator
 												+ "channel-artifacts" + File.separator
 												+ "channel.tx";
 	
