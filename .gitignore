@@ -1,3 +1,5 @@
 /java
-/fugitivec/target/*
+/fugitivec/target
 logging.log
+.project
+/fugitivec/bin/
