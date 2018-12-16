@@ -24,7 +24,6 @@ import org.hyperledger.fabric_ca.sdk.exception.RegistrationException;
 
 
 import java.net.MalformedURLException;
-import com.vancir.config.Config;
 import com.vancir.user.AppUser;
 
 /**

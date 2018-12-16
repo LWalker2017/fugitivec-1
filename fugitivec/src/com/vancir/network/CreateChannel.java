@@ -3,7 +3,6 @@ package com.vancir.network;
 import org.apache.log4j.Logger;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -12,10 +11,11 @@ import org.hyperledger.fabric.sdk.ChannelConfiguration;
 import org.hyperledger.fabric.sdk.Peer;
 import org.hyperledger.fabric.sdk.Orderer;
 
-import com.vancir.config.Config;
+
 import com.vancir.user.AppUser;
 import com.vancir.manager.FabricManager;
-import com.vancir.utilities.util;
+import com.vancir.utilities.Util;
+import com.vancir.utilities.Config;
 
 public class CreateChannel {
 
@@ -24,12 +24,12 @@ public class CreateChannel {
     private static String PROJ_ROOT;
     public static void main(String[] args) {
         try {
-            PROJ_ROOT = util.getProjectRoot();
+            PROJ_ROOT = Util.getProjectRoot();
 
-            AppUser org1Admin = util.getOrgAdmin(Config.ADMIN, Config.ORG1_MSP,
+            AppUser org1Admin = Util.getOrgAdmin(Config.ADMIN, Config.ORG1_MSP,
                 PROJ_ROOT + Config.ORG1_ADMIN_PK, PROJ_ROOT + Config.ORG1_ADMIN_CERT);
 
-            AppUser org2Admin = util.getOrgAdmin(Config.ADMIN, Config.ORG2_MSP,
+            AppUser org2Admin = Util.getOrgAdmin(Config.ADMIN, Config.ORG2_MSP,
                 PROJ_ROOT + Config.ORG2_ADMIN_PK, PROJ_ROOT + Config.ORG2_ADMIN_CERT);
 
             FabricManager fabricManager = new FabricManager(org1Admin);
@@ -66,11 +66,6 @@ public class CreateChannel {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        
-    }
-    
-
-
-    
+        }   
+    }    
 }

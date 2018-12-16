@@ -1,7 +1,6 @@
-package com.vancir.config;
+package com.vancir.utilities;
 
 import java.io.File;
-import java.util.Properties;
 
 public class Config {
 	
@@ -54,6 +53,14 @@ public class Config {
 	
 	public static final String PEER1_ORG2_NAME = "peer1.org2.vancir.com";
 	public static final String PEER1_ORG2_URL = "grpc://localhost:8056";
+
+	public static final String CHAINCODE_NAME = "fugitivec";
+	public static final String CHAINCODE_VERSION = "1";
+	public static final String CHAINCODE_PATH = "network-resources" + File.separator 
+												+ "chaincode";
+	public static final String CHAINCODE_SOURCE = "src" + File.separator
+												+ "fugitivec";
+
 	
 
 }

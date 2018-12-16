@@ -1,7 +1,5 @@
 package com.vancir.utilities;
 
-import org.apache.log4j.Logger;
-
 import java.io.File;
 import java.io.InputStream;
 import java.io.BufferedReader;
@@ -11,8 +9,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Properties;
 import javax.xml.bind.DatatypeConverter;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -21,16 +17,11 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 
 import org.hyperledger.fabric.sdk.Enrollment;
-import org.hyperledger.fabric.sdk.security.CryptoSuite;
-import org.hyperledger.fabric_ca.sdk.HFCAClient;
 
 import com.vancir.user.AppUser;
-import com.vancir.manager.CAManager;
 import com.vancir.network.CAEnrollment;
 
-public class util {
-
-    private static Logger logger = Logger.getLogger(util.class); 
+public class Util {
 
     public static String getProjectRoot() {
         // get project root path

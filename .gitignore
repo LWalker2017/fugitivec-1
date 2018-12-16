@@ -1,5 +1,8 @@
 /java
-/fugitivec/target
+target
+bin/
 logging.log
 .project
-/fugitivec/bin/
+.classpath
+.factorypath
+.settings

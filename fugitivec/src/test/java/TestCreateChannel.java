@@ -1,14 +1,12 @@
-package com.vancir.network;
+package test.java;
 
 import org.junit.Test;
 import org.junit.Before;
 import static org.junit.Assert.assertEquals;
 
-import com.vancir.config.Config;
-import com.vancir.utilities.util;
+import com.vancir.utilities.Config;
+import com.vancir.utilities.Util;
 import com.vancir.user.AppUser;
-import com.vancir.manager.FabricManager;
-
 
 public class TestCreateChannel {
 
@@ -18,15 +16,14 @@ public class TestCreateChannel {
 
     @Before
     public void setup() throws Exception {
-        PROJ_ROOT = util.getProjectRoot(); 
-        this.org1Admin = util.getOrgAdmin(Config.ADMIN, Config.ORG1_MSP,
+        PROJ_ROOT = Util.getProjectRoot(); 
+        this.org1Admin = Util.getOrgAdmin(Config.ADMIN, Config.ORG1_MSP,
             PROJ_ROOT + Config.ORG1_ADMIN_PK, PROJ_ROOT + Config.ORG1_ADMIN_CERT);
-        this.org2Admin = util.getOrgAdmin(Config.ADMIN, Config.ORG2_MSP,
+        this.org2Admin = Util.getOrgAdmin(Config.ADMIN, Config.ORG2_MSP,
             PROJ_ROOT + Config.ORG2_ADMIN_PK, PROJ_ROOT + Config.ORG2_ADMIN_CERT);
 
         System.out.println("[*] Setup org1Admin and org2Admin");
     }
-
 
     @Test
     public void TestGetOrgAdmin() {
