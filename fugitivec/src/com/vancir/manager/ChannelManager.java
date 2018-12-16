@@ -16,6 +16,7 @@ import org.hyperledger.fabric.sdk.BlockEvent.TransactionEvent;
 import org.hyperledger.fabric.sdk.ChaincodeID;
 import org.hyperledger.fabric.sdk.Channel;
 import org.hyperledger.fabric.sdk.ProposalResponse;
+import org.hyperledger.fabric.sdk.QueryByChaincodeRequest;
 import org.hyperledger.fabric.sdk.TransactionRequest.Type;
 import org.hyperledger.fabric.sdk.InstantiateProposalRequest;
 import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
@@ -23,6 +24,7 @@ import org.hyperledger.fabric.sdk.exception.ProposalException;
 import org.hyperledger.fabric.sdk.exception.ChaincodeEndorsementPolicyParseException;
 
 import com.vancir.manager.FabricManager;
+import com.vancir.utilities.Config;
 
 @Getter
 public class ChannelManager {
@@ -43,7 +45,7 @@ public class ChannelManager {
             throws InvalidArgumentException, ProposalException, ChaincodeEndorsementPolicyParseException, IOException {
         
         InstantiateProposalRequest request = fabricManager.getHfclient().newInstantiationProposalRequest();
-        request.setProposalWaitTime(180000);
+        request.setProposalWaitTime(18000);
         ChaincodeID.Builder chaincodeIDBuilder = ChaincodeID.newBuilder().setName(chaincodeName)
                                                                         .setVersion(chaincodeVersion)
                                                                         .setPath(chaincodePath);
@@ -79,5 +81,21 @@ public class ChannelManager {
         logger.info(cf.toString());
         return responses;
     }
+
+    public Collection<ProposalResponse> invokeChaincode(String chaincodeName, String function, String[] args) 
+        throws InvalidArgumentException, ProposalException {
+
+            QueryByChaincodeRequest request = fabricManager.getHfclient().newQueryProposalRequest();
+            ChaincodeID chaincodeID = ChaincodeID.newBuilder().setName(Config.CHAINCODE_NAME).build();
+            request.setChaincodeID(chaincodeID);
+            request.setFcn(function);
+            if (args != null) {
+                request.setArgs(args);
+            }
+
+            Collection<ProposalResponse> responses = channel.queryByChaincode(request);
+
+            return responses;
+        }
 
 }

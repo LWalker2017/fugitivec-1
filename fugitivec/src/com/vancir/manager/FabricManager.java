@@ -19,6 +19,7 @@ import org.hyperledger.fabric.sdk.exception.CryptoException;
 import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
 import org.hyperledger.fabric.sdk.exception.ProposalException;
 import org.hyperledger.fabric.sdk.ProposalResponse;
+import org.hyperledger.fabric.sdk.TransactionRequest.Type;
 
 @Getter 
 public class FabricManager {
@@ -52,16 +53,17 @@ public class FabricManager {
      * @throws ProposalException
      */
     public Collection<ProposalResponse> deployChaincode(String chaincodeName, String chaincodeVersion, 
-            String chaincodePath, String chaincodeSourceLocation, String langType, Collection<Peer> peers) 
+            String chaincodePath, String chaincodeSourceLocation, Type langType, Collection<Peer> peers) 
             throws InvalidArgumentException, IOException, ProposalException {
 
         InstallProposalRequest request = hfclient.newInstallProposalRequest();
         ChaincodeID.Builder chaincodeIDBuilder = ChaincodeID.newBuilder().setName(chaincodeName)
-                                                                        .setVersion(chaincodeVersion)
-                                                                        .setPath(chaincodePath);
+                                                                        .setVersion(chaincodeVersion);
+                                                                        // .setPath(chaincodePath);
         ChaincodeID chaincodeID = chaincodeIDBuilder.build();
 
         request.setChaincodeID(chaincodeID);
+        request.setChaincodeLanguage(langType);
         request.setUserContext(hfclient.getUserContext());
         request.setChaincodeSourceLocation(new File(chaincodeSourceLocation));
         request.setChaincodeVersion(chaincodeVersion);

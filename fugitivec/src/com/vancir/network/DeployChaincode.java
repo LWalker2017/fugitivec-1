@@ -72,8 +72,8 @@ public class DeployChaincode {
             // start to deploy chaincode in org1
             fabricManager.getHfclient().setUserContext(org1Admin);
             Collection<ProposalResponse> response = fabricManager.deployChaincode(Config.CHAINCODE_NAME, Config.CHAINCODE_VERSION,
-                                                        PROJ_ROOT + Config.CHAINCODE_PATH, Config.CHAINCODE_SOURCE,       
-                                                        Type.GO_LANG.toString(), org1Peers);
+                                                        Config.CHAINCODE_PATH, Config.CHAINCODE_SOURCE,       
+                                                        Type.JAVA, org1Peers);
 
             for (ProposalResponse res : response) {
                 logger.info(Config.CHAINCODE_NAME + " - Chaincode deployment " + res.getStatus());
@@ -82,8 +82,8 @@ public class DeployChaincode {
             // start to deploy chaincode in org2
             fabricManager.getHfclient().setUserContext(org2Admin);
             response = fabricManager.deployChaincode(Config.CHAINCODE_NAME, Config.CHAINCODE_VERSION, 
-                                                        PROJ_ROOT + Config.CHAINCODE_PATH, Config.CHAINCODE_VERSION,
-                                                        Type.JAVA.toString(), org2Peers);
+                                                        Config.CHAINCODE_PATH, Config.CHAINCODE_SOURCE,
+                                                        Type.JAVA, org2Peers);
 
             for (ProposalResponse res : response) {
                 logger.info(Config.CHAINCODE_NAME + " - Chaincode deployment " + res.getStatus());
@@ -93,7 +93,8 @@ public class DeployChaincode {
             ChannelManager channelManager = new ChannelManager(mychannel.getName(), mychannel, fabricManager);
             String[] arguments = { "Alice", "Alice is fugitive", "Bob", "Bob is not fugitive" };
 
-            response = channelManager.instantiateChaincode(Config.CHAINCODE_NAME, Config.CHAINCODE_VERSION, PROJ_ROOT + Config.CHAINCODE_PATH,
+            // FIXME: Chaincode instantiation FAILURE
+            response = channelManager.instantiateChaincode(Config.CHAINCODE_NAME, Config.CHAINCODE_VERSION, PROJ_ROOT + "network-resources/" + Config.CHAINCODE_SOURCE,
                                                         Type.JAVA.toString(), "init", arguments, null);
             for (ProposalResponse res : response) {
                 logger.info(Config.CHAINCODE_NAME + " - Chaincode instantiation " + res.getStatus());

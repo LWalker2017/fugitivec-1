@@ -57,6 +57,7 @@ public class CAManager {
         caClient = HFCAClient.createNewInstance(caUrl, caClientProps);
         caClient.setCryptoSuite(cryptoSuite);
     }
+
     /**
      * Register user
      * 
