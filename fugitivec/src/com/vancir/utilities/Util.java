@@ -20,6 +20,7 @@ import org.hyperledger.fabric.sdk.Enrollment;
 
 import com.vancir.user.AppUser;
 import com.vancir.network.CAEnrollment;
+import com.vancir.utilities.Config;
 
 public class Util {
 
@@ -41,7 +42,7 @@ public class Util {
      * @param certFolderPath            The folder path of certificate
      * @return                          A AppUser instance for the specified organization admin user
      */
-    public static AppUser getOrgAdmin(String adminName, String msp, 
+    public static AppUser getOrgAdmin(String adminName, String msp,
             String pkFolderPath, String certFolderPath) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         AppUser orgAdmin = new AppUser();
         Enrollment enrollOrgAdmin = getEnrollFromPath(pkFolderPath, certFolderPath);
@@ -49,8 +50,31 @@ public class Util {
         orgAdmin.setMspId(msp);
         orgAdmin.setName(adminName);
 
+        if (msp == Config.ORG1_MSP) {
+            orgAdmin.setAffiliation(Config.ORG1);
+        } else if (msp == Config.ORG2_MSP) {
+            orgAdmin.setAffiliation(Config.ORG2);
+        }
+
         return orgAdmin;
     }
+
+    public static AppUser getOrgUser(String adminName, String msp) 
+            throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+        AppUser orgAdmin = new AppUser();
+        orgAdmin.setMspId(msp);
+        orgAdmin.setName(adminName);
+
+        if (msp == Config.ORG1_MSP) {
+            orgAdmin.setAffiliation(Config.ORG1);
+        } else if (msp == Config.ORG2_MSP) {
+            orgAdmin.setAffiliation(Config.ORG2);
+        }
+
+        return orgAdmin;
+    }
+
+
     /**
      * Get enrollment from the specified 
      * keystore and admincerts folder path

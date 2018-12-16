@@ -47,7 +47,9 @@ public class CAManager {
      * @param caClientProps         The fabric-ca client properties. Can be null
      * @throws Exception
      */
-    public CAManager(String caUrl, Properties caClientProps) throws IllegalAccessException, MalformedURLException, InstantiationException, ClassNotFoundException, CryptoException, InvalidArgumentException, NoSuchMethodException, InvocationTargetException {
+    public CAManager(String caUrl, Properties caClientProps) 
+            throws IllegalAccessException, MalformedURLException, InstantiationException, ClassNotFoundException, 
+            CryptoException, InvalidArgumentException, NoSuchMethodException, InvocationTargetException {
         this.caUrl = caUrl;
         this.caClientProps = caClientProps;     
 
@@ -91,9 +93,9 @@ public class CAManager {
      * @return
      * @throws Exception
      */
-    public AppUser registerAndEnrollUser(AppUser registrar) throws Exception, EnrollmentException {
+    public String registerAndEnrollUser(AppUser registrar) throws Exception, EnrollmentException {
         String eSecret = registerUser(registrar);
         AppUser user = enrollUser(registrar, eSecret);
-        return user;
+        return eSecret;
     }
 }
