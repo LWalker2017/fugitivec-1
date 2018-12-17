@@ -72,8 +72,7 @@ public class DeployChaincode {
             // start to deploy chaincode in org1
             fabricManager.getHfclient().setUserContext(org1Admin);
             Collection<ProposalResponse> response = fabricManager.deployChaincode(Config.CHAINCODE_NAME, Config.CHAINCODE_VERSION,
-                                                        Config.CHAINCODE_PATH, Config.CHAINCODE_SOURCE,       
-                                                        Type.JAVA, org1Peers);
+                                                        Config.CHAINCODE_PATH, Type.JAVA, org1Peers);
 
             for (ProposalResponse res : response) {
                 logger.info(Config.CHAINCODE_NAME + " - Chaincode deployment " + res.getStatus());
@@ -82,8 +81,7 @@ public class DeployChaincode {
             // start to deploy chaincode in org2
             fabricManager.getHfclient().setUserContext(org2Admin);
             response = fabricManager.deployChaincode(Config.CHAINCODE_NAME, Config.CHAINCODE_VERSION, 
-                                                        Config.CHAINCODE_PATH, Config.CHAINCODE_SOURCE,
-                                                        Type.JAVA, org2Peers);
+                                                        Config.CHAINCODE_PATH, Type.JAVA, org2Peers);
 
             for (ProposalResponse res : response) {
                 logger.info(Config.CHAINCODE_NAME + " - Chaincode deployment " + res.getStatus());
@@ -94,12 +92,12 @@ public class DeployChaincode {
             String[] arguments = { "Alice", "Alice is fugitive", "Bob", "Bob is not fugitive" };
 
             // FIXME: Chaincode instantiation FAILURE
-            response = channelManager.instantiateChaincode(Config.CHAINCODE_NAME, Config.CHAINCODE_VERSION, PROJ_ROOT + "network-resources/" + Config.CHAINCODE_SOURCE,
+            response = channelManager.instantiateChaincode(Config.CHAINCODE_NAME, Config.CHAINCODE_VERSION, PROJ_ROOT + Config.CHAINCODE_ABS_PATH,
                                                         Type.JAVA.toString(), "init", arguments, null);
             for (ProposalResponse res : response) {
                 logger.info(Config.CHAINCODE_NAME + " - Chaincode instantiation " + res.getStatus());
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }

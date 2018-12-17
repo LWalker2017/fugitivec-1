@@ -45,7 +45,7 @@ public class ChannelManager {
             throws InvalidArgumentException, ProposalException, ChaincodeEndorsementPolicyParseException, IOException {
         
         InstantiateProposalRequest request = fabricManager.getHfclient().newInstantiationProposalRequest();
-        request.setProposalWaitTime(18000);
+        request.setProposalWaitTime(360000);
         ChaincodeID.Builder chaincodeIDBuilder = ChaincodeID.newBuilder().setName(chaincodeName)
                                                                         .setVersion(chaincodeVersion)
                                                                         .setPath(chaincodePath);

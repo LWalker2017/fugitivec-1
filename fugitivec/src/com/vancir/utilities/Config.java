@@ -54,11 +54,10 @@ public class Config {
 	public static final String PEER1_ORG2_NAME = "peer1.org2.vancir.com";
 	public static final String PEER1_ORG2_URL = "grpc://localhost:8056";
 
-	public static final String CHAINCODE_NAME = "fugitivec";
+	public static final String CHAINCODE_NAME = "mycc";
 	public static final String CHAINCODE_VERSION = "1";
 	public static final String CHAINCODE_PATH = "chaincode"; // "network-resources" + File.separator 
-	public static final String CHAINCODE_SOURCE = "chaincode" + File.separator + "src" + File.separator
-												+ "fugitivec";
+	public static final String CHAINCODE_ABS_PATH = "network-resources" + File.separator + "chaincode";
 												
 	public static final String EVENTHUB_NAME = "eventhub01";
 	public static final String EVENTHUB_URL = "grpc://localhost:7053";

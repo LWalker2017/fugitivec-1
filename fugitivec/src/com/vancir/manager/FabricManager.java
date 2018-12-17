@@ -53,13 +53,14 @@ public class FabricManager {
      * @throws ProposalException
      */
     public Collection<ProposalResponse> deployChaincode(String chaincodeName, String chaincodeVersion, 
-            String chaincodePath, String chaincodeSourceLocation, Type langType, Collection<Peer> peers) 
+            String chaincodeSourceLocation, Type langType, Collection<Peer> peers) 
             throws InvalidArgumentException, IOException, ProposalException {
 
         InstallProposalRequest request = hfclient.newInstallProposalRequest();
         ChaincodeID.Builder chaincodeIDBuilder = ChaincodeID.newBuilder().setName(chaincodeName)
                                                                         .setVersion(chaincodeVersion);
                                                                         // .setPath(chaincodePath);
+                                                                        // java chaincode don't need to set chaincodePath
         ChaincodeID chaincodeID = chaincodeIDBuilder.build();
 
         request.setChaincodeID(chaincodeID);
