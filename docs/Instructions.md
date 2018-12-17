@@ -50,3 +50,25 @@ docker-compose -f docker-compose.yml up -d
 
 如果想实时查看区块链网络的日志, 可以不使用`-d`选项
 
+
+安装和实例化chaincode
+
+``` bash
+$ docker exec -it chaincode bash
+# CORE_PEER_ADDRESS=peer0.org1.vancir.com:7051 CORE_CHAINCODE_ID_NAME=mycc java -jar chaincode.jar
+CORE_PEER_ADDRESS=peer0.org1.vancir.com:7052 CORE_CHAINCODE_ID_NAME=mycc java -jar chaincode.jar
+```
+
+``` bash
+$ java -cp fugitivec-1.0-SNAPSHOT-jar-with-dependencies.jar com.vancir.network.CreateChannel
+$ docker exec -it cli bash
+# install chaincode 
+peer chaincode install -n mycc -v 1.0 -l java -p /opt/gopath/src/github.com/chaincode
+# instantiate
+peer chaincode instantiate -o orderer.vancir.com:7050 --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/vancir.com/orderers/orderer.vancir.com/msp/tlscacerts/tlsca.vancir.com-cert.pem -C mychannel -n mycc -v 1.0 -c '{"Args":["init", "Alice", "Alice is fugitive", "Bob", "Bob is not fugitive"]}' -P "OR ('Org1MSP.member','Org2MSP.member')"
+# add, delete, query, update 
+peer chaincode invoke -n mycc -c '{"Args":["add", "Peter", "Peter is a good boy"]}' -C mychannel
+peer chaincode invoke -n mycc -c '{"Args":["delete", "Bob"]}' -C mychannel
+peer chaincode invoke -n mycc -c '{"Args":["query", "Alice"]}' -C mychannel
+peer chaincode invoke -n mycc -c '{"Args":["update", "Alice", "Alice is not fugitive"]}' -C mychannel
+```

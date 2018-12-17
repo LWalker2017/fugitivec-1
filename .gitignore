@@ -6,3 +6,4 @@ logging.log
 .classpath
 .factorypath
 .settings
+apache-maven-3.6.0*

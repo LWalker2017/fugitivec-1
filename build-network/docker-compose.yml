@@ -1,8 +1,5 @@
 version: '2'
 
-networks:
-  custom:
-
 services:
 
   ca.org1.vancir.com:
@@ -18,8 +15,6 @@ services:
       - "7054:7054"
     volumes:
       - ../network-resources/crypto-config/peerOrganizations/org1.vancir.com/ca:/etc/hyperledger/fabric-ca-server
-    networks:
-      - custom
 
   ca.org2.vancir.com:
     container_name: ca_peerOrg2
@@ -34,8 +29,6 @@ services:
       - "8054:7054"
     volumes:
       - ../network-resources/crypto-config/peerOrganizations/org2.vancir.com/ca:/etc/hyperledger/fabric-ca-server
-    networks:
-      - custom
 
   orderer.vancir.com:
     container_name: orderer.vancir.com
@@ -45,8 +38,6 @@ services:
     environment:
       - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/channel-artifacts/genesis.block
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
-    networks:
-      - custom
     ports:
       - 7050:7050
     volumes:
@@ -63,12 +54,10 @@ services:
       - CORE_PEER_ID=peer0.org1.vancir.com
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_ADDRESS=peer0.org1.vancir.com:7051
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=network_custom
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.vancir.com:7051
     ports:
       - 7051:7051
       - 7053:7053
-    networks:
-      - custom
     volumes:
       - ../network-resources/crypto-config/peerOrganizations/org1.vancir.com/peers/peer0.org1.vancir.com/msp:/etc/hyperledger/fabric/msp
       - ../network-resources/crypto-config/peerOrganizations/org1.vancir.com/users:/etc/hyperledger/msp/users
@@ -84,9 +73,7 @@ services:
       - CORE_PEER_ID=peer1.org1.vancir.com
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_ADDRESS=peer1.org1.vancir.com:7051
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=network_custom
-    networks:
-      - custom
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.vancir.com:7051
     ports:
       - 7056:7051
       - 7058:7053
@@ -105,9 +92,7 @@ services:
       - CORE_PEER_ID=peer0.org2.vancir.com
       - CORE_PEER_LOCALMSPID=Org2MSP
       - CORE_PEER_ADDRESS=peer0.org2.vancir.com:7051
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=network_custom
-    networks:
-      - custom
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.vancir.com:7051
     ports:
       - 8051:7051
       - 8053:7053
@@ -126,9 +111,7 @@ services:
       - CORE_PEER_ID=peer1.org2.vancir.com
       - CORE_PEER_LOCALMSPID=Org2MSP
       - CORE_PEER_ADDRESS=peer1.org2.vancir.com:7051
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=network_custom
-    networks:
-      - custom
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org2.vancir.com:7051
     ports:
       - 8056:7051
       - 8058:7053
@@ -137,3 +120,63 @@ services:
       - ../network-resources/crypto-config/peerOrganizations/org2.vancir.com/users:/etc/hyperledger/msp/users
     depends_on:
       - orderer.vancir.com
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:1.3.0
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      # - CORE_LOGGING_LEVEL=DEBUG
+      - CORE_LOGGING_LEVEL=INFO
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.org1.vancir.com:7051
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_TLS_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.vancir.com/peers/peer0.org1.vancir.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.vancir.com/peers/peer0.org1.vancir.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.vancir.com/peers/peer0.org1.vancir.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.vancir.com/users/Admin@org1.vancir.com/msp
+    working_dir: /opt/gopath/src/github.com/
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../network-resources/chaincode/:/opt/gopath/src/github.com/chaincode
+        - ../network-resources/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ../network-resources/channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    depends_on:
+      - orderer.vancir.com
+      - peer0.org1.vancir.com
+      - peer1.org1.vancir.com
+      - peer0.org2.vancir.com
+      - peer1.org2.vancir.com
+  
+  chaincode:
+    container_name: chaincode
+    image: hyperledger/fabric-ccenv
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_ID=chaincode
+      - CORE_PEER_ADDRESS=peer0.org1.vancir.com:7051
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_TLS_ENABLED=false
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.vancir.com/users/Admin@org1.vancir.com/msp
+      - CORE_TLS_CLIENT_CERT_PATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.vancir.com/users/Admin@org1.vancir.com/tls/client.crt
+      - CORE_TLS_CLIENT_KEY_PATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.vancir.com/users/Admin@org1.vancir.com/tls/client.key
+    working_dir: /opt/gopath/src/github.com/chaincode
+    command: /bin/bash -c 'sleep 6000000'
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../network-resources/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ../network-resources/chaincode/:/opt/gopath/src/github.com/chaincode
+    depends_on:
+      - orderer.vancir.com
+      - peer0.org1.vancir.com
+      - peer1.org1.vancir.com
+      - peer0.org2.vancir.com
+      - peer1.org2.vancir.com

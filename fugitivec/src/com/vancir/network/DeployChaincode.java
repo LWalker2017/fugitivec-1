@@ -99,8 +99,7 @@ public class DeployChaincode {
             for (ProposalResponse res : response) {
                 logger.info(Config.CHAINCODE_NAME + " - Chaincode instantiation " + res.getStatus());
             }
-
-
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
