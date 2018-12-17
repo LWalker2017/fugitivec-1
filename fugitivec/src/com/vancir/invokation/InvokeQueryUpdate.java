@@ -65,19 +65,12 @@ public class InvokeQueryUpdate {
 
             Thread.sleep(10000);
             String[] testQueryArgs = { "Alice" };
-            Collection<ProposalResponse> responseQuery = channelManager.invokeChaincode(Config.CHAINCODE_NAME, "query", testQueryArgs);
-            for (ProposalResponse res : responseQuery) {
-                String stringResponse = new String(res.getChaincodeActionResponsePayload());
-                logger.info(stringResponse);
-            }
+            channelManager.invokeChaincode(Config.CHAINCODE_NAME, "query", testQueryArgs);
 
             Thread.sleep(10000);
             String[] testUpdateArgs = { "Alice", "Alice is not fugitive" };
-            Collection<ProposalResponse> responseUpdate = channelManager.invokeChaincode(Config.CHAINCODE_NAME, "update", testUpdateArgs);
-            for (ProposalResponse res : responseUpdate) {
-                String stringResponse = new String(res.getChaincodeActionResponsePayload());
-                logger.info(stringResponse);
-            }
+            channelManager.invokeChaincode(Config.CHAINCODE_NAME, "update", testUpdateArgs);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -17,6 +17,7 @@ import org.hyperledger.fabric.sdk.ChaincodeID;
 import org.hyperledger.fabric.sdk.Channel;
 import org.hyperledger.fabric.sdk.ProposalResponse;
 import org.hyperledger.fabric.sdk.QueryByChaincodeRequest;
+import org.hyperledger.fabric.sdk.TransactionProposalRequest;
 import org.hyperledger.fabric.sdk.TransactionRequest.Type;
 import org.hyperledger.fabric.sdk.InstantiateProposalRequest;
 import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
@@ -82,10 +83,10 @@ public class ChannelManager {
         return responses;
     }
 
-    public Collection<ProposalResponse> invokeChaincode(String chaincodeName, String function, String[] args) 
+    public void invokeChaincode(String chaincodeName, String function, String[] args) 
         throws InvalidArgumentException, ProposalException {
 
-            QueryByChaincodeRequest request = fabricManager.getHfclient().newQueryProposalRequest();
+            TransactionProposalRequest request = fabricManager.getHfclient().newTransactionProposalRequest();
             ChaincodeID chaincodeID = ChaincodeID.newBuilder().setName(Config.CHAINCODE_NAME).build();
             request.setChaincodeID(chaincodeID);
             request.setFcn(function);
@@ -93,9 +94,12 @@ public class ChannelManager {
                 request.setArgs(args);
             }
 
-            Collection<ProposalResponse> responses = channel.queryByChaincode(request);
+            Collection<ProposalResponse> responses = channel.sendTransactionProposal(request);
 
-            return responses;
+            for (ProposalResponse res : responses) {
+                // String stringResponse = new String(res.getChaincodeActionResponsePayload());
+                logger.info(res.getMessage());
+            }
         }
 
 }

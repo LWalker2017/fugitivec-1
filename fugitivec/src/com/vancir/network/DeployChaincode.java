@@ -91,7 +91,6 @@ public class DeployChaincode {
             ChannelManager channelManager = new ChannelManager(mychannel.getName(), mychannel, fabricManager);
             String[] arguments = { "Alice", "Alice is fugitive", "Bob", "Bob is not fugitive" };
 
-            // FIXME: Chaincode instantiation FAILURE
             response = channelManager.instantiateChaincode(Config.CHAINCODE_NAME, Config.CHAINCODE_VERSION, PROJ_ROOT + Config.CHAINCODE_ABS_PATH,
                                                         Type.JAVA.toString(), "init", arguments, null);
             for (ProposalResponse res : response) {

@@ -1,7 +1,6 @@
 package com.vancir.invokation;
 
 import java.util.Map;
-import java.util.Collection;
 import java.util.HashMap;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -18,7 +17,6 @@ import org.hyperledger.fabric.sdk.Channel;
 import org.hyperledger.fabric.sdk.EventHub;
 import org.hyperledger.fabric.sdk.Orderer;
 import org.hyperledger.fabric.sdk.Peer;
-import org.hyperledger.fabric.sdk.ProposalResponse;
 import org.hyperledger.fabric.sdk.TransactionProposalRequest;
 public class InvokeAddDelete {
     
@@ -64,19 +62,12 @@ public class InvokeAddDelete {
 
             Thread.sleep(10000);
             String[] testAddArgs = { "Peter", "Perter is a good boy" };
-            Collection<ProposalResponse> responseAdd = channelManager.invokeChaincode(Config.CHAINCODE_NAME, "add", testAddArgs);
-            for (ProposalResponse res : responseAdd) {
-                String stringResponse = new String(res.getChaincodeActionResponsePayload());
-                logger.info(stringResponse);
-            }
+            channelManager.invokeChaincode(Config.CHAINCODE_NAME, "add", testAddArgs);
 
             Thread.sleep(10000);
             String[] testDeleteArgs = { "Bob" };
-            Collection<ProposalResponse> responseDelete = channelManager.invokeChaincode(Config.CHAINCODE_NAME, "delete", testDeleteArgs);
-            for (ProposalResponse res : responseDelete) {
-                String stringResponse = new String(res.getChaincodeActionResponsePayload());
-                logger.info(stringResponse);
-            }
+            channelManager.invokeChaincode(Config.CHAINCODE_NAME, "delete", testDeleteArgs);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

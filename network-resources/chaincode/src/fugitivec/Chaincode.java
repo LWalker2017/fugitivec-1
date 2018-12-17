@@ -88,7 +88,7 @@ public class Chaincode extends ChaincodeBase {
         String logMsg = args.get(1);
         stub.putStringState(logKey, logMsg);
 
-        return newSuccessResponse("Added " + logKey + " " + logMsg);
+        return newSuccessResponse("Added " + logKey + " " + stub.getStringState(logKey));
     }
 
     private Response delete(ChaincodeStub stub, List<String> args) {
@@ -97,7 +97,7 @@ public class Chaincode extends ChaincodeBase {
         }
         String logKey = KEY_PREFIX + args.get(0);
         stub.delState(logKey);
-        return newSuccessResponse();
+        return newSuccessResponse("Deleted " + logKey);
     }
     
     private Response query(ChaincodeStub stub, List<String> args) {
@@ -124,6 +124,6 @@ public class Chaincode extends ChaincodeBase {
 
         stub.putStringState(logKey, afterMsg);
         
-        return newSuccessResponse(String.format("Key: %s. Before updated, the message is %s After  updated, the message is %s.", logKey, beforeMsg, afterMsg));
+        return newSuccessResponse(String.format("Key: %s. Before updated, the message is %s After updated, the message is %s.", logKey, beforeMsg, stub.getStringState(logKey)));
     }
 }
