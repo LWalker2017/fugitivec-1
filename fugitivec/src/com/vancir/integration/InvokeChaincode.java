@@ -49,7 +49,8 @@ public class InvokeChaincode {
             
             request.setChaincodeID(chaincodeID);   
             request.setFcn("init");
-            String[] arguments = { "Alice", "Alice is fugitive", "Bob", "Bob is not fugitive" };
+            // init <string ID> <string name> <string sex> <int age> <bool isFleeing> <String description>
+            String[] arguments = { "11111111", "Alice", "Female", "20", "true", "Alice is not fugitive" };
             request.setArgs(arguments);
             request.setProposalWaitTime(1000);
 
@@ -61,19 +62,19 @@ public class InvokeChaincode {
             request.setTransientMap(transMap);
 
             Thread.sleep(10000);
-            String[] testAddArgs = { "Peter", "Perter is a good boy" };
+            String[] testAddArgs = { "22222222", "Peter", "Male", "19", "false", "Perter is a good boy" };
             channelManager.invokeChaincode(Config.CHAINCODE_NAME, "add", testAddArgs);
 
             Thread.sleep(10000);
-            String[] testDeleteArgs = { "Bob" };
+            String[] testDeleteArgs = { "Alice" };
             channelManager.invokeChaincode(Config.CHAINCODE_NAME, "delete", testDeleteArgs);
 
             Thread.sleep(10000);
-            String[] testQueryArgs = { "Alice" };
+            String[] testQueryArgs = { "Peter" };
             channelManager.invokeChaincode(Config.CHAINCODE_NAME, "query", testQueryArgs);
 
             Thread.sleep(10000);
-            String[] testUpdateArgs = { "Alice", "Alice is not fugitive" };
+            String[] testUpdateArgs = { "Peter", "Peter is not a good boy" };
             channelManager.invokeChaincode(Config.CHAINCODE_NAME, "update", testUpdateArgs);
 
         } catch (Exception e) {

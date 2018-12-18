@@ -3,6 +3,11 @@ package fugitivec;
 import java.util.List;
 // import log4j.Logger;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.hyperledger.fabric.shim.ChaincodeBase;
 import org.hyperledger.fabric.shim.ChaincodeStub;
 
@@ -17,6 +22,8 @@ public class Chaincode extends ChaincodeBase {
 
     public static final String CHAINCODE_ID = "Fujian";
     public static final String KEY_PREFIX = CHAINCODE_ID + "-CFL-"; // "CFL" means "China Fugitive Ledger"
+
+    ObjectMapper mapper = new ObjectMapper();
 
     public static void main(String[] args) {
         new Chaincode().start(args);
@@ -36,19 +43,30 @@ public class Chaincode extends ChaincodeBase {
 
             List<String> args = stub.getParameters();
 
-            if (args.size() != 4) {
-                return newErrorResponse("Incorrect number of arguments. Expecting 4 Syntax: init <key1> <msg1> <key2> <msg2>");
+            if (args.size() != 6) {
+                return newErrorResponse("Incorrect number of arguments. Expecting 4 Syntax: init <string ID> <string name> <string sex> <int age> <bool isFleeing> <String description>");
             }
 
-            String FirstKey = KEY_PREFIX + args.get(0);
-            String FirstMsg = args.get(1);
-            String SecondKey = KEY_PREFIX + args.get(2);
-            String SecondMsg = args.get(3);
-            
-            stub.putStringState(FirstKey, FirstMsg);
-            stub.putStringState(SecondKey, SecondMsg);
+            String personID = args.get(0);
+            String personLogID = KEY_PREFIX + args.get(0);
+            String personName = args.get(1);
+            String personSex = args.get(2);
+            int personAge = Integer.parseInt(args.get(3));
+            Boolean personIsFleeing = Boolean.parseBoolean(args.get(4));
+            String personDesc = args.get(5);
 
-            return newSuccessResponse("inited with " + FirstKey + " " + FirstMsg + " " + SecondKey + " " + SecondMsg);
+            Person person = new Person(personID, personName, personSex, personAge, personIsFleeing, personDesc);
+            try {
+                // convert object to json 
+                String personString = mapper.writeValueAsString(person);
+                stub.putStringState(personLogID, personString);
+                return newSuccessResponse("inited with " + personString);
+
+            } catch (JsonGenerationException e) {
+                return newErrorResponse("Json generation failed");
+            } catch (JsonMappingException e) {
+                return newErrorResponse("Json mapping failed");
+            }
         } catch (Exception e) {
             return newErrorResponse(e);
         }
@@ -81,49 +99,140 @@ public class Chaincode extends ChaincodeBase {
 
     private Response add(ChaincodeStub stub, List<String> args) {
         if (args.size() != 2) {
-            return newErrorResponse("Incorrect number of arguments. Expecting 2. Syntax: add <key> <message>");
+            return newErrorResponse("Incorrect number of arguments. Expecting 2. Syntax: add <string ID> <string name> <string sex> <int age> <bool isFleeing> <String description>");
         } 
         
-        String logKey = KEY_PREFIX + args.get(0);
-        String logMsg = args.get(1);
-        stub.putStringState(logKey, logMsg);
+        String personID = args.get(0);
+        String personLogID = KEY_PREFIX + args.get(0);
+        String personName = args.get(1);
+        String personSex = args.get(2);
+        int personAge = Integer.parseInt(args.get(3));
+        Boolean personIsFleeing = Boolean.parseBoolean(args.get(4));
+        String personDesc = args.get(5);
 
-        return newSuccessResponse("Added " + logKey + " " + stub.getStringState(logKey));
+        Person person = new Person(personID, personName, personSex, personAge, personIsFleeing, personDesc);
+        try {
+            // convert object to json 
+            String personString = mapper.writeValueAsString(person);
+            stub.putStringState(personLogID, personString);
+            return newSuccessResponse("added with " + personString);
+        
+        } catch (JsonGenerationException e) {
+            return newErrorResponse("Json generation failed");
+        } catch (JsonMappingException e) {
+            return newErrorResponse("Json mapping failed");
+        } catch (JsonProcessingException e) {
+            return newErrorResponse("Json processing failed"); 
+        }
     }
 
     private Response delete(ChaincodeStub stub, List<String> args) {
         if (args.size() != 1) {
-            return newErrorResponse("Incorrect number of arguments. Expecting 1. Syntax: delete <key>");
+            return newErrorResponse("Incorrect number of arguments. Expecting 1. Syntax: delete <string ID>");
         }
-        String logKey = KEY_PREFIX + args.get(0);
-        stub.delState(logKey);
-        return newSuccessResponse("Deleted " + logKey);
+        String personLogID = KEY_PREFIX + args.get(0);
+        stub.delState(personLogID);
+        return newSuccessResponse("Deleted " + personLogID);
     }
     
     private Response query(ChaincodeStub stub, List<String> args) {
         if (args.size() != 1) {
-            return newErrorResponse("Incorrect number of arguments. Expecting name of the person to query. Syntax: query <key>");
+            return newErrorResponse("Incorrect number of arguments. Expecting ID of the person to query. Syntax: query <string ID>");
         }
 
-        String logKey = KEY_PREFIX + args.get(0);
-        String value = stub.getStringState(logKey);
-        if (value == null) {
-            return newErrorResponse(String.format("Error: query for %s is null", logKey));
+        String personLogID = KEY_PREFIX + args.get(0);
+        String personString = stub.getStringState(personLogID);
+        if (personString == null) {
+            return newErrorResponse(String.format("Error: query for %s is null", personLogID));
         }
-
-        return newSuccessResponse(String.format("Query Response: Name: %s, Info: %s ", logKey, value));
+        try {
+            Person person = mapper.readValue(personString, Person.class);
+            return newSuccessResponse(String.format("Query Response: Name: %s, Sex: %s, Age: %d, isFleeing: %b, Description: %s", 
+                                                    person.getName(), person.getSex(), person.getAge(), person.getIsFleeing(), person.getDesc()));
+        } catch (Exception e) {
+            return newErrorResponse("failed to convert person from string into object");
+        }
     }
-
+    /**
+     * 
+     * @param stub
+     * @param args
+     * @return
+     */
     private Response update(ChaincodeStub stub, List<String> args) {
         if (args.size() != 2) {
-            return newErrorResponse("Incorrect number of arguments. Expecting 2 Syntax: update <key> <newMsg>");
+            return newErrorResponse("Incorrect number of arguments. Expecting 2 Syntax: update <string ID> <string description>");
         }
-        String logKey = KEY_PREFIX + args.get(0);
-        String afterMsg = args.get(1);
-        String beforeMsg = stub.getStringState(logKey);
+        String personLogID = KEY_PREFIX + args.get(0);
+        String personAfterDesc = args.get(1);
+        String personString = stub.getStringState(personLogID);
 
-        stub.putStringState(logKey, afterMsg);
-        
-        return newSuccessResponse(String.format("Key: %s. Before updated, the message is %s After updated, the message is %s.", logKey, beforeMsg, stub.getStringState(logKey)));
+        try {
+            Person person = mapper.readValue(personString, Person.class);
+
+            String personBeforeDesc = person.getDesc();
+            person.setDesc(personAfterDesc);
+
+            String personUpdatedString = mapper.writeValueAsString(person);
+            stub.putStringState(personLogID, personUpdatedString);
+
+            return newSuccessResponse(String.format("Key: %s. Before updated, the message is %s After updated, the message is %s.", 
+                                                        personLogID, personBeforeDesc, stub.getStringState(personLogID)));
+
+        } catch (Exception e) {
+            return newErrorResponse("failed to convert person from string into object");
+        }
     }
+}
+
+
+/**
+ * Person 
+ * @param id
+ * @param name          
+ * @param sex
+ * @param age
+ * @param isFleeing     is still in fleeing
+ * @param desc          person description
+ */ 
+class Person {
+    String id;
+    String name;
+    String sex;
+    int age;
+    Boolean isFleeing; 
+    String desc;
+
+    public Person(String id, String name, String sex, int age, Boolean isFlee, String desc) {
+        this.id = id;
+        this.name = name;
+        this.sex = sex;
+        this.age = age;
+        this.isFleeing = isFlee;
+        this.desc = desc;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getName() {
+        return this.name;
+    } 
+    public String getSex() {
+        return this.sex;
+    }
+    public int getAge() {
+        return this.age;
+    }
+    public Boolean getIsFleeing() {
+        return this.isFleeing;
+    }
+    public String getDesc() {
+        return this.desc;
+    }
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+
 }
