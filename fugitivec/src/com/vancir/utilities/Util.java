@@ -15,6 +15,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.hyperledger.fabric.sdk.Enrollment;
 
@@ -50,6 +52,10 @@ public class Util {
         orgAdmin.setMspId(msp);
         orgAdmin.setName(adminName);
 
+        Set<String> roleSet = new TreeSet<>();
+        roleSet.add("client");
+        orgAdmin.setRoles(roleSet);
+
         if (msp == Config.ORG1_MSP) {
             orgAdmin.setAffiliation(Config.ORG1);
         } else if (msp == Config.ORG2_MSP) {
@@ -61,17 +67,21 @@ public class Util {
 
     public static AppUser getOrgUser(String adminName, String msp) 
             throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        AppUser orgAdmin = new AppUser();
-        orgAdmin.setMspId(msp);
-        orgAdmin.setName(adminName);
+        AppUser orgUser = new AppUser();
+        orgUser.setMspId(msp);
+        orgUser.setName(adminName);
+        
+        Set<String> roleSet = new TreeSet<>();
+        roleSet.add("client");
+        orgUser.setRoles(roleSet);
 
         if (msp == Config.ORG1_MSP) {
-            orgAdmin.setAffiliation(Config.ORG1);
+            orgUser.setAffiliation(Config.ORG1);
         } else if (msp == Config.ORG2_MSP) {
-            orgAdmin.setAffiliation(Config.ORG2);
+            orgUser.setAffiliation(Config.ORG2);
         }
 
-        return orgAdmin;
+        return orgUser;
     }
 
 

@@ -1,27 +1,31 @@
-package com.vancir.network;
-
-import org.apache.log4j.Logger;
+package com.vancir.integration;
 
 import java.io.File;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import org.apache.log4j.Logger;
 
 import org.hyperledger.fabric.sdk.Channel;
 import org.hyperledger.fabric.sdk.ChannelConfiguration;
 import org.hyperledger.fabric.sdk.Peer;
 import org.hyperledger.fabric.sdk.Orderer;
+import org.hyperledger.fabric.sdk.ProposalResponse;
+import org.hyperledger.fabric.sdk.TransactionRequest.Type;
 
 
 import com.vancir.user.AppUser;
+import com.vancir.manager.ChannelManager;
 import com.vancir.manager.FabricManager;
 import com.vancir.utilities.Util;
 import com.vancir.utilities.Config;
 
-public class CreateChannel {
+public class DeployChaincode {
 
-    private static Logger logger = Logger.getLogger(CreateChannel.class); 
+    private static Logger logger = Logger.getLogger(DeployChaincode.class); 
 
     private static String PROJ_ROOT;
+
     public static void main(String[] args) {
         try {
             PROJ_ROOT = Util.getProjectRoot();
@@ -58,14 +62,43 @@ public class CreateChannel {
             mychannel.joinPeer(peer0_org2);
             mychannel.joinPeer(peer1_org2);
 
-            Collection<Peer> peers = mychannel.getPeers();
-            Iterator peerIter = peers.iterator();
-            while (peerIter.hasNext()) {
-                Peer nextPeer = (Peer) peerIter.next();
-                logger.info(nextPeer.getName() + " at " + nextPeer.getUrl());
+            List<Peer> org1Peers = new ArrayList<Peer>();
+            org1Peers.add(peer0_org1);
+            org1Peers.add(peer1_org1);
+            List<Peer> org2Peers = new ArrayList<Peer>();
+            org2Peers.add(peer0_org2);
+            org2Peers.add(peer1_org2);
+
+            // start to deploy chaincode in org1
+            fabricManager.getHfclient().setUserContext(org1Admin);
+            Collection<ProposalResponse> response = fabricManager.deployChaincode(Config.CHAINCODE_NAME, Config.CHAINCODE_VERSION,
+                                                        Config.CHAINCODE_PATH, Type.JAVA, org1Peers);
+
+            for (ProposalResponse res : response) {
+                logger.info(Config.CHAINCODE_NAME + " - Chaincode deployment " + res.getStatus());
             }
+
+            // start to deploy chaincode in org2
+            fabricManager.getHfclient().setUserContext(org2Admin);
+            response = fabricManager.deployChaincode(Config.CHAINCODE_NAME, Config.CHAINCODE_VERSION, 
+                                                        Config.CHAINCODE_PATH, Type.JAVA, org2Peers);
+
+            for (ProposalResponse res : response) {
+                logger.info(Config.CHAINCODE_NAME + " - Chaincode deployment " + res.getStatus());
+            }
+
+            // start to instantiate chaincode
+            ChannelManager channelManager = new ChannelManager(mychannel.getName(), mychannel, fabricManager);
+            String[] arguments = { "Alice", "Alice is fugitive", "Bob", "Bob is not fugitive" };
+
+            response = channelManager.instantiateChaincode(Config.CHAINCODE_NAME, Config.CHAINCODE_VERSION, PROJ_ROOT + Config.CHAINCODE_ABS_PATH,
+                                                        Type.JAVA.toString(), "init", arguments, null);
+            for (ProposalResponse res : response) {
+                logger.info(Config.CHAINCODE_NAME + " - Chaincode instantiation " + res.getStatus());
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
-        }   
-    }    
+        }
+    }
 }

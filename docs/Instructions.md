@@ -72,3 +72,13 @@ peer chaincode invoke -n mycc -c '{"Args":["delete", "Bob"]}' -C mychannel
 peer chaincode invoke -n mycc -c '{"Args":["query", "Alice"]}' -C mychannel
 peer chaincode invoke -n mycc -c '{"Args":["update", "Alice", "Alice is not fugitive"]}' -C mychannel
 ```
+
+
+Some command can be helpful
+``` bash
+# use wget to submit post request
+wget --post-data "{\"id\":\"user1234\",\"type\":\"client\",\"affiliation\":\"org1\",\"attrs\":[]}" http://localhost:7054/api/v1/register
+wget --post-data "{\"id\":\"user555\",\"type\":\"client\",\"affiliation\":\"org1\",\"attrs\":[]}" http://localhost:7054/register
+# register a user to org1
+fabric-ca-client register -d --id.name user001 --id.affiliation org1
+```

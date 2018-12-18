@@ -1,4 +1,4 @@
-package com.vancir.invokation;
+package com.vancir.integration;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -18,9 +18,9 @@ import org.hyperledger.fabric.sdk.EventHub;
 import org.hyperledger.fabric.sdk.Orderer;
 import org.hyperledger.fabric.sdk.Peer;
 import org.hyperledger.fabric.sdk.TransactionProposalRequest;
-public class InvokeAddDelete {
+public class InvokeChaincode {
     
-    private static Logger logger = Logger.getLogger(InvokeAddDelete.class); 
+    private static Logger logger = Logger.getLogger(InvokeChaincode.class); 
 
     private static final byte[] EXPECTED_EVENT_DATA = "!".getBytes(UTF_8);
     private static final String EXPECTED_EVENT_NAME = "event";
@@ -67,6 +67,14 @@ public class InvokeAddDelete {
             Thread.sleep(10000);
             String[] testDeleteArgs = { "Bob" };
             channelManager.invokeChaincode(Config.CHAINCODE_NAME, "delete", testDeleteArgs);
+
+            Thread.sleep(10000);
+            String[] testQueryArgs = { "Alice" };
+            channelManager.invokeChaincode(Config.CHAINCODE_NAME, "query", testQueryArgs);
+
+            Thread.sleep(10000);
+            String[] testUpdateArgs = { "Alice", "Alice is not fugitive" };
+            channelManager.invokeChaincode(Config.CHAINCODE_NAME, "update", testUpdateArgs);
 
         } catch (Exception e) {
             e.printStackTrace();

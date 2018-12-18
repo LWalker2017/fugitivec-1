@@ -6,6 +6,8 @@ import lombok.ToString;
 import org.apache.log4j.Logger;
 
 import java.util.Properties;
+
+
 import java.lang.Exception;
 import java.lang.IllegalAccessException;
 import java.lang.InstantiationException;
@@ -19,9 +21,9 @@ import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
 import org.hyperledger.fabric_ca.sdk.HFCAClient;
 import org.hyperledger.fabric_ca.sdk.RegistrationRequest;
 import org.hyperledger.fabric_ca.sdk.exception.EnrollmentException;
+import org.hyperledger.fabric_ca.sdk.Attribute;
 // import org.hyperledger.fabric_ca.sdk.exception.InvalidArgumentException;
 import org.hyperledger.fabric_ca.sdk.exception.RegistrationException;
-
 
 import java.net.MalformedURLException;
 import com.vancir.user.AppUser;
@@ -54,9 +56,11 @@ public class CAManager {
         this.caClientProps = caClientProps;     
 
         CryptoSuite cryptoSuite = CryptoSuite.Factory.getCryptoSuite();
-        caClient = HFCAClient.createNewInstance(caUrl, caClientProps);
-        caClient.setCryptoSuite(cryptoSuite);
+        this.caClient = HFCAClient.createNewInstance(caUrl, caClientProps);
+        this.caClient.setCryptoSuite(cryptoSuite);
     }
+
+
 
     /**
      * Register user
@@ -84,9 +88,18 @@ public class CAManager {
         Enrollment enrollment = caClient.enroll(user.getName(), secret);
         user.setEnrollment(enrollment);
 
-        logger.info("CA -" + caUrl + "Enrolled User - " + user.getName());
+        logger.info("CA -" + caUrl + " Enrolled User - " + user.getName());
         return user;
     }
+
+    public AppUser enrollAdminUser(String username, String password) throws Exception {
+        Enrollment adminEnrollment = caClient.enroll(username, password);
+        adminUser.setEnrollment(adminEnrollment);
+
+        logger.info("CA -" + caUrl + " Enrolled Admin - " + adminUser.getName());
+        return adminUser;
+    }
+
     /**
      * Register and enroll user
      * 
