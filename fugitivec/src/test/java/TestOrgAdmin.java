@@ -8,7 +8,7 @@ import com.vancir.utilities.Config;
 import com.vancir.utilities.Util;
 import com.vancir.user.AppUser;
 
-public class TestCreateChannel {
+public class TestOrgAdmin {
 
     String PROJ_ROOT;
     AppUser org1Admin;

@@ -89,7 +89,7 @@ public class DeployChaincode {
 
             // start to instantiate chaincode
             ChannelManager channelManager = new ChannelManager(mychannel.getName(), mychannel, fabricManager);
-            String[] arguments = { "Alice", "Alice is fugitive", "Bob", "Bob is not fugitive" };
+            String[] arguments = { "11111111", "Alice", "Female", "20", "true", "Alice is not fugitive" };
 
             response = channelManager.instantiateChaincode(Config.CHAINCODE_NAME, Config.CHAINCODE_VERSION, PROJ_ROOT + Config.CHAINCODE_ABS_PATH,
                                                         Type.JAVA.toString(), "init", arguments, null);

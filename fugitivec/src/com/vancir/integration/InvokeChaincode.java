@@ -14,7 +14,7 @@ import com.vancir.utilities.Util;
 import org.apache.log4j.Logger;
 import org.hyperledger.fabric.sdk.ChaincodeID;
 import org.hyperledger.fabric.sdk.Channel;
-import org.hyperledger.fabric.sdk.EventHub;
+// import org.hyperledger.fabric.sdk.EventHub;
 import org.hyperledger.fabric.sdk.Orderer;
 import org.hyperledger.fabric.sdk.Peer;
 import org.hyperledger.fabric.sdk.TransactionProposalRequest;
@@ -22,8 +22,8 @@ public class InvokeChaincode {
     
     private static Logger logger = Logger.getLogger(InvokeChaincode.class); 
 
-    private static final byte[] EXPECTED_EVENT_DATA = "!".getBytes(UTF_8);
-    private static final String EXPECTED_EVENT_NAME = "event";
+    // private static final byte[] EXPECTED_EVENT_DATA = "!".getBytes(UTF_8);
+    // private static final String EXPECTED_EVENT_NAME = "event";
 
     public static void main(String[] args) {
         try {
@@ -36,11 +36,11 @@ public class InvokeChaincode {
             ChannelManager channelManager = fabricManager.createChannelManager(Config.CHANNEL_NAME);
             Channel channel = channelManager.getChannel();
             Peer peer = fabricManager.getHfclient().newPeer(Config.PEER0_ORG1_NAME, Config.PEER0_ORG1_URL);
-            EventHub eventHub = fabricManager.getHfclient().newEventHub(Config.EVENTHUB_NAME, Config.EVENTHUB_URL);
+            // EventHub eventHub = fabricManager.getHfclient().newEventHub(Config.EVENTHUB_NAME, Config.EVENTHUB_URL);
             Orderer orderer = fabricManager.getHfclient().newOrderer(Config.ORDERER_NAME, Config.ORDERER_URL);
 
             channel.addPeer(peer);
-            channel.addEventHub(eventHub);
+            // channel.addEventHub(eventHub);
             channel.addOrderer(orderer);
             channel.initialize();
 
@@ -50,7 +50,7 @@ public class InvokeChaincode {
             request.setChaincodeID(chaincodeID);   
             request.setFcn("init");
             // init <string ID> <string name> <string sex> <int age> <bool isFleeing> <String description>
-            String[] arguments = { "11111111", "Alice", "Female", "20", "true", "Alice is not fugitive" };
+            String[] arguments = { "ID001", "Alice", "Female", "20", "true", "Alice is not fugitive" };
             request.setArgs(arguments);
             request.setProposalWaitTime(1000);
 
@@ -58,24 +58,21 @@ public class InvokeChaincode {
             transMap.put("HyperLedgerFabric", "TransactionProposalRequest:JavaSDK".getBytes(UTF_8));
             transMap.put("method", "TransactionProposalRequest".getBytes(UTF_8));
             transMap.put("result", ":)".getBytes(UTF_8));
-            transMap.put(EXPECTED_EVENT_NAME, EXPECTED_EVENT_DATA);
+            // transMap.put(EXPECTED_EVENT_NAME, EXPECTED_EVENT_DATA);
             request.setTransientMap(transMap);
 
-            Thread.sleep(10000);
-            String[] testAddArgs = { "22222222", "Peter", "Male", "19", "false", "Perter is a good boy" };
+            String[] testAddArgs = { "ID002", "Peter", "Male", "19", "false", "Perter is a good boy" };
             channelManager.invokeChaincode(Config.CHAINCODE_NAME, "add", testAddArgs);
 
-            Thread.sleep(10000);
-            String[] testDeleteArgs = { "Alice" };
+            // String[] testQueryArgs = { "ID001" };
+            // channelManager.invokeChaincode(Config.CHAINCODE_NAME, "query", testQueryArgs);
+
+            // String[] testUpdateArgs = { "ID001", "Alice is fugitive" };
+            // channelManager.invokeChaincode(Config.CHAINCODE_NAME, "update", testUpdateArgs);
+
+            String[] testDeleteArgs = { "ID001" };
             channelManager.invokeChaincode(Config.CHAINCODE_NAME, "delete", testDeleteArgs);
 
-            Thread.sleep(10000);
-            String[] testQueryArgs = { "Peter" };
-            channelManager.invokeChaincode(Config.CHAINCODE_NAME, "query", testQueryArgs);
-
-            Thread.sleep(10000);
-            String[] testUpdateArgs = { "Peter", "Peter is not a good boy" };
-            channelManager.invokeChaincode(Config.CHAINCODE_NAME, "update", testUpdateArgs);
 
         } catch (Exception e) {
             e.printStackTrace();

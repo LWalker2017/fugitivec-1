@@ -33,6 +33,7 @@ public class Chaincode extends ChaincodeBase {
         return CHAINCODE_ID;
     }
 
+    // FIXME: Unless transaction is committed, update is not available for GetState.
     @Override
     public Response init(ChaincodeStub stub) {
         try {
@@ -44,7 +45,7 @@ public class Chaincode extends ChaincodeBase {
             List<String> args = stub.getParameters();
 
             if (args.size() != 6) {
-                return newErrorResponse("Incorrect number of arguments. Expecting 4 Syntax: init <string ID> <string name> <string sex> <int age> <bool isFleeing> <String description>");
+                return newErrorResponse("Incorrect number of arguments. Expecting 6. Syntax: init <string ID> <string name> <string sex> <int age> <bool isFleeing> <String description>");
             }
 
             String personID = args.get(0);
@@ -98,8 +99,8 @@ public class Chaincode extends ChaincodeBase {
     }
 
     private Response add(ChaincodeStub stub, List<String> args) {
-        if (args.size() != 2) {
-            return newErrorResponse("Incorrect number of arguments. Expecting 2. Syntax: add <string ID> <string name> <string sex> <int age> <bool isFleeing> <String description>");
+        if (args.size() != 6) {
+            return newErrorResponse("Incorrect number of arguments. Expecting 6. Syntax: add <string ID> <string name> <string sex> <int age> <bool isFleeing> <String description>");
         } 
         
         String personID = args.get(0);
@@ -115,7 +116,7 @@ public class Chaincode extends ChaincodeBase {
             // convert object to json 
             String personString = mapper.writeValueAsString(person);
             stub.putStringState(personLogID, personString);
-            return newSuccessResponse("added with " + personString);
+            return newSuccessResponse("added with " + personLogID + personString);
         
         } catch (JsonGenerationException e) {
             return newErrorResponse("Json generation failed");
@@ -142,15 +143,15 @@ public class Chaincode extends ChaincodeBase {
 
         String personLogID = KEY_PREFIX + args.get(0);
         String personString = stub.getStringState(personLogID);
-        if (personString == null) {
-            return newErrorResponse(String.format("Error: query for %s is null", personLogID));
+        if (personString == null|| "".equals(personString)) {
+            return newErrorResponse(String.format("Query for %s is null", personLogID));
         }
         try {
             Person person = mapper.readValue(personString, Person.class);
             return newSuccessResponse(String.format("Query Response: Name: %s, Sex: %s, Age: %d, isFleeing: %b, Description: %s", 
                                                     person.getName(), person.getSex(), person.getAge(), person.getIsFleeing(), person.getDesc()));
         } catch (Exception e) {
-            return newErrorResponse("failed to convert person from string into object");
+            return newErrorResponse("failed to convert person from string into object: " + personString);
         }
     }
     /**
@@ -166,7 +167,9 @@ public class Chaincode extends ChaincodeBase {
         String personLogID = KEY_PREFIX + args.get(0);
         String personAfterDesc = args.get(1);
         String personString = stub.getStringState(personLogID);
-
+        if (personString == null || "".equals(personString)) {
+            return newErrorResponse(String.format("Error: query for %s is null", personLogID));
+        }
         try {
             Person person = mapper.readValue(personString, Person.class);
 
@@ -180,7 +183,7 @@ public class Chaincode extends ChaincodeBase {
                                                         personLogID, personBeforeDesc, stub.getStringState(personLogID)));
 
         } catch (Exception e) {
-            return newErrorResponse("failed to convert person from string into object");
+            return newErrorResponse("failed to convert person from string into object: " + personString);
         }
     }
 }
@@ -196,42 +199,42 @@ public class Chaincode extends ChaincodeBase {
  * @param desc          person description
  */ 
 class Person {
-    String id;
-    String name;
-    String sex;
-    int age;
-    Boolean isFleeing; 
-    String desc;
+    String ID;
+    String Name;
+    String Sex;
+    int Age;
+    Boolean IsFleeing; 
+    String Desc;
 
     public Person(String id, String name, String sex, int age, Boolean isFlee, String desc) {
-        this.id = id;
-        this.name = name;
-        this.sex = sex;
-        this.age = age;
-        this.isFleeing = isFlee;
-        this.desc = desc;
+        this.ID = id;
+        this.Name = name;
+        this.Sex = sex;
+        this.Age = age;
+        this.IsFleeing = isFlee;
+        this.Desc = desc;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.Name = name;
     }
     public String getName() {
-        return this.name;
+        return this.Name;
     } 
     public String getSex() {
-        return this.sex;
+        return this.Sex;
     }
     public int getAge() {
-        return this.age;
+        return this.Age;
     }
     public Boolean getIsFleeing() {
-        return this.isFleeing;
+        return this.IsFleeing;
     }
     public String getDesc() {
-        return this.desc;
+        return this.Desc;
     }
     public void setDesc(String desc) {
-        this.desc = desc;
+        this.Desc = desc;
     }
 
 
