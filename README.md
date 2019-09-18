@@ -1,4 +1,4 @@
-# Fagitive Consortium
+# Fugitive Consortium
 
 ## Introduction
 
